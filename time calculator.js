@@ -1,3 +1,16 @@
+/*
+ * Script Name: Time divider
+ * Version: 1
+ * Last Updated: 21-11-2023
+ * Author: BadyTM
+ * Author Contact: N/A
+ * Approved Date: N/A
+ */
+
+/*--------------------------------------------------------------------------------------
+ * This script can NOT be cloned and modified without permission from the script author.
+ --------------------------------------------------------------------------------------*/
+
 if (typeof timeCalculatorModal === "undefined") {
   class timeCalculatorModal {
     constructor() {
@@ -82,4 +95,3 @@ if (typeof timeCalculatorModal === "undefined") {
 if (!document.querySelector("#script-modal")) {
   new timeCalculatorModal();
 }
-new timeCalculatorModal();
