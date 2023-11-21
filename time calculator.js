@@ -12,33 +12,26 @@
  --------------------------------------------------------------------------------------*/
 
 if (typeof timeCalculatorModal === "undefined") {
-  class timeCalculatorModal {
-    constructor() {
-      this.scriptModal = document.createElement("div");
-      this.createModal();
-      this.fillModal();
-      this.scriptModal.querySelector("#calculate-btn").addEventListener("click", () => {
-        this.timeCalculator();
-      });
-    }
+  const timeCalculatorModal = () => {
+    const scriptModal = document.createElement("div");
 
-    createModal = () => {
-      this.scriptModal.setAttribute("id", "script-modal");
-      this.scriptModal.style.position = "absolute";
-      this.scriptModal.style.zIndex = "9999";
-      this.scriptModal.style.display = "flex";
-      this.scriptModal.style.flexWrap = "wrap";
-      this.scriptModal.style.backgroundColor = "#f4e4bc";
-      this.scriptModal.style.border = "2px solid #603000";
-      this.scriptModal.style.maxWidth = "90%";
-      this.scriptModal.style.top = "35%";
-      this.scriptModal.style.left = "50%";
-      this.scriptModal.style.transform = "translate(-50%, -35%)";
-      this.scriptModal.style.padding = "0.5rem";
-      document.body.appendChild(this.scriptModal);
+    const createModal = () => {
+      scriptModal.setAttribute("id", "script-modal");
+      scriptModal.style.position = "absolute";
+      scriptModal.style.zIndex = "9999";
+      scriptModal.style.display = "flex";
+      scriptModal.style.flexWrap = "wrap";
+      scriptModal.style.backgroundColor = "#f4e4bc";
+      scriptModal.style.border = "2px solid #603000";
+      scriptModal.style.maxWidth = "90%";
+      scriptModal.style.top = "35%";
+      scriptModal.style.left = "50%";
+      scriptModal.style.transform = "translate(-50%, -35%)";
+      scriptModal.style.padding = "0.5rem";
+      document.body.appendChild(scriptModal);
     };
 
-    timeCalculator = () => {
+    const timeCalculator = () => {
       const timeHolder = document.querySelector("#time-holder");
       const hours = document.querySelector("#script-hours");
       const minutes = document.querySelector("#script-minutes");
@@ -59,8 +52,8 @@ if (typeof timeCalculatorModal === "undefined") {
       }:${dividedSeconds > 9 ? dividedSeconds : "0" + dividedSeconds}`;
     };
 
-    fillModal = () => {
-      this.scriptModal.innerHTML = `
+    const fillModal = () => {
+      scriptModal.innerHTML = `
       <div style="flex-basis: 100%; display: flex; flex-direction: row-reverse">
         <button style="height: 2rem; width: 2rem" onclick="document.querySelector('#script-modal').remove()">X</button>
       </div>
@@ -88,10 +81,15 @@ if (typeof timeCalculatorModal === "undefined") {
         ></div>
       </div>`;
     };
-  }
 
-  window.timeCalculatorModal = timeCalculatorModal;
+    createModal();
+    fillModal();
+    scriptModal.querySelector("#calculate-btn").addEventListener("click", () => {
+      timeCalculator();
+    });
+  };
+  window.timeCalculatorModal = timeCalculatorModal();
 }
 if (!document.querySelector("#script-modal")) {
-  new timeCalculatorModal();
+  timeCalculatorModal();
 }
