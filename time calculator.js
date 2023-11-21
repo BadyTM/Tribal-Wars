@@ -82,3 +82,4 @@ if (typeof timeCalculatorModal === "undefined") {
 if (!document.querySelector("#script-modal")) {
   new timeCalculatorModal();
 }
+new timeCalculatorModal();
