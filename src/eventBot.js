@@ -4,8 +4,8 @@ const enemyUnitsWithStats = [];
 const ownUnitWrapper = document.querySelector(".own-unit-zone");
 const ownUnitsElements = [...ownUnitWrapper.querySelectorAll(".trump-unit")];
 const ownUnitsWithStats = [];
-const unitsInOrder = [];
-const getUnitsStats = (unitsElementsArray, unitsStatsArray) => {
+const unitsWithStatsInOrder = [];
+const getUnitsStats = (unitsElementsArray, unitsStatsArray, ownUnit) => {
     unitsElementsArray?.forEach((unitElement) => {
         const unitClasses = unitElement.querySelector(".trump-unit-portrait")?.classList;
         const unitClassName = [...unitClasses].find((className) => className.startsWith("look-"));
@@ -14,19 +14,23 @@ const getUnitsStats = (unitsElementsArray, unitsStatsArray) => {
         const unitAttackMin = parseInt((unitAttackWrapper?.querySelector(".min")).innerText);
         const unitAttackMax = parseInt((unitAttackWrapper?.querySelector(".max")).innerText);
         const unitWithStats = {
-            unitName: unitClassName,
+            ownUnit: ownUnit,
             unitElement: unitElement,
+            unitName: unitClassName,
             health: unitHealth,
             attackMin: unitAttackMin,
             attackMax: unitAttackMax,
             attackAvg: (unitAttackMax + unitAttackMin) / 2,
+            groupAttack: 0,
         };
         unitsStatsArray.push(unitWithStats);
     });
+    console.log(unitsStatsArray);
 };
 const getUnitsOrder = () => {
     const orderWrapper = document.querySelector(".turn-order");
     const unitsElementsInOrder = [...orderWrapper.querySelectorAll(".trump-unit-portrait")];
+    const unitsInOrder = [];
     unitsElementsInOrder?.forEach((unitElement) => {
         const unitClassName = [...unitElement.classList].find((className) => className.startsWith("look-"));
         unitsInOrder.push(unitClassName);
@@ -35,9 +39,39 @@ const getUnitsOrder = () => {
     allUnits.sort((a, b) => {
         return unitsInOrder.indexOf(a.unitName) - unitsInOrder.indexOf(b.unitName);
     });
-    return allUnits;
+    unitsWithStatsInOrder.push(...allUnits);
 };
-getUnitsStats(enemyUnitsElements, enemyUnitsWithStats);
-getUnitsStats(ownUnitsElements, ownUnitsWithStats);
-console.log(getUnitsOrder());
+const getGroupAttack = () => {
+    let attackGroupSum = 0;
+    let currentGroup = [];
+    unitsWithStatsInOrder.forEach((unit, index) => {
+        if (unit.ownUnit) {
+            currentGroup.push(unit);
+            attackGroupSum += unit.attackAvg;
+        }
+        if (!unit.ownUnit || index === unitsWithStatsInOrder.length - 1) {
+            currentGroup.forEach((unit) => {
+                unit.groupAttack = attackGroupSum;
+            });
+            currentGroup = [];
+            attackGroupSum = 0;
+        }
+    });
+};
+const attackEnemy = () => {
+    const strongestUnit = enemyUnitsWithStats.reduce((prevUnit, currentUnit) => {
+        const parentElement = currentUnit.unitElement.parentElement;
+        if (parentElement && parentElement.classList.contains("dead")) {
+            return prevUnit;
+        }
+        return currentUnit.attackAvg > prevUnit.attackAvg ? currentUnit : prevUnit;
+    });
+    strongestUnit.unitElement.click();
+    strongestUnit.unitElement = document.querySelector(`.${strongestUnit.unitName}`);
+};
+getUnitsStats(enemyUnitsElements, enemyUnitsWithStats, false);
+getUnitsStats(ownUnitsElements, ownUnitsWithStats, true);
+getUnitsOrder();
+getGroupAttack();
+attackEnemy();
 export {};
