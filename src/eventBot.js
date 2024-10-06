@@ -4,7 +4,7 @@ const enemyUnitsWithStats = [];
 const ownUnitWrapper = document.querySelector(".own-unit-zone");
 const ownUnitsElements = [...ownUnitWrapper.querySelectorAll(".trump-unit")];
 const ownUnitsWithStats = [];
-const unitsWithStatsInOrder = [];
+//const unitsWithStatsInOrder: UnitWithStats[] = [];
 const getUnitsStats = (unitsElementsArray, unitsStatsArray, ownUnit) => {
     unitsElementsArray?.forEach((unitElement) => {
         const unitClasses = unitElement.querySelector(".trump-unit-portrait")?.classList;
@@ -25,53 +25,58 @@ const getUnitsStats = (unitsElementsArray, unitsStatsArray, ownUnit) => {
         };
         unitsStatsArray.push(unitWithStats);
     });
-    console.log(unitsStatsArray);
 };
-const getUnitsOrder = () => {
-    const orderWrapper = document.querySelector(".turn-order");
-    const unitsElementsInOrder = [...orderWrapper.querySelectorAll(".trump-unit-portrait")];
-    const unitsInOrder = [];
-    unitsElementsInOrder?.forEach((unitElement) => {
-        const unitClassName = [...unitElement.classList].find((className) => className.startsWith("look-"));
-        unitsInOrder.push(unitClassName);
-    });
-    const allUnits = [...enemyUnitsWithStats, ...ownUnitsWithStats];
-    allUnits.sort((a, b) => {
-        return unitsInOrder.indexOf(a.unitName) - unitsInOrder.indexOf(b.unitName);
-    });
-    unitsWithStatsInOrder.push(...allUnits);
-};
-const getGroupAttack = () => {
-    let attackGroupSum = 0;
-    let currentGroup = [];
-    unitsWithStatsInOrder.forEach((unit, index) => {
-        if (unit.ownUnit) {
-            currentGroup.push(unit);
-            attackGroupSum += unit.attackAvg;
-        }
-        if (!unit.ownUnit || index === unitsWithStatsInOrder.length - 1) {
-            currentGroup.forEach((unit) => {
-                unit.groupAttack = attackGroupSum;
-            });
-            currentGroup = [];
-            attackGroupSum = 0;
-        }
-    });
-};
+/*const getUnitsOrder = (): void => {
+  const orderWrapper = document.querySelector(".turn-order") as HTMLElement;
+  const unitsElementsInOrder = [...orderWrapper.querySelectorAll(".trump-unit-portrait")] as HTMLElement[];
+  const unitsInOrder: string[] = [];
+
+  unitsElementsInOrder?.forEach((unitElement: HTMLElement) => {
+    const unitClassName = [...unitElement.classList].find((className) => className.startsWith("look-")) as string;
+    unitsInOrder.push(unitClassName);
+  });
+
+  const allUnits = [...enemyUnitsWithStats, ...ownUnitsWithStats];
+  allUnits.sort((a, b) => {
+    return unitsInOrder.indexOf(a.unitName) - unitsInOrder.indexOf(b.unitName);
+  });
+
+  unitsWithStatsInOrder.push(...allUnits);
+};*/
+/*
+const getGroupAttack = (): void => {
+  let attackGroupSum = 0;
+  let currentGroup: UnitWithStats[] = [];
+
+  unitsWithStatsInOrder.forEach((unit, index) => {
+    if (unit.ownUnit) {
+      currentGroup.push(unit);
+      attackGroupSum += unit.attackAvg;
+    }
+    if (!unit.ownUnit || index === unitsWithStatsInOrder.length - 1) {
+      currentGroup.forEach((unit) => {
+        unit.groupAttack = attackGroupSum;
+      });
+      currentGroup = [];
+      attackGroupSum = 0;
+    }
+  });
+};*/
 const attackEnemy = () => {
     const strongestUnit = enemyUnitsWithStats.reduce((prevUnit, currentUnit) => {
-        const parentElement = currentUnit.unitElement.parentElement;
-        if (parentElement && parentElement.classList.contains("dead")) {
+        if (currentUnit.unitElement.classList.contains("dead")) {
             return prevUnit;
         }
         return currentUnit.attackAvg > prevUnit.attackAvg ? currentUnit : prevUnit;
     });
+    console.log(strongestUnit);
+    strongestUnit.unitElement = enemyUnitWrapper.querySelector(`.${strongestUnit.unitName}`)?.parentElement;
     strongestUnit.unitElement.click();
-    strongestUnit.unitElement = document.querySelector(`.${strongestUnit.unitName}`);
+    //await new Promise((resolve) => setTimeout(resolve, 1000));
 };
 getUnitsStats(enemyUnitsElements, enemyUnitsWithStats, false);
 getUnitsStats(ownUnitsElements, ownUnitsWithStats, true);
-getUnitsOrder();
-getGroupAttack();
+//getUnitsOrder();
+//getGroupAttack();
 attackEnemy();
 export {};

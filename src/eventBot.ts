@@ -17,7 +17,7 @@ const ownUnitWrapper = document.querySelector(".own-unit-zone") as HTMLElement;
 const ownUnitsElements = [...ownUnitWrapper.querySelectorAll(".trump-unit")] as HTMLElement[];
 const ownUnitsWithStats: UnitWithStats[] = [];
 
-const unitsWithStatsInOrder: UnitWithStats[] = [];
+//const unitsWithStatsInOrder: UnitWithStats[] = [];
 
 const getUnitsStats = (unitsElementsArray: HTMLElement[], unitsStatsArray: UnitWithStats[], ownUnit: boolean): void => {
   unitsElementsArray?.forEach((unitElement: HTMLElement): void => {
@@ -42,10 +42,9 @@ const getUnitsStats = (unitsElementsArray: HTMLElement[], unitsStatsArray: UnitW
 
     unitsStatsArray.push(unitWithStats);
   });
-  console.log(unitsStatsArray);
 };
 
-const getUnitsOrder = (): void => {
+/*const getUnitsOrder = (): void => {
   const orderWrapper = document.querySelector(".turn-order") as HTMLElement;
   const unitsElementsInOrder = [...orderWrapper.querySelectorAll(".trump-unit-portrait")] as HTMLElement[];
   const unitsInOrder: string[] = [];
@@ -61,8 +60,9 @@ const getUnitsOrder = (): void => {
   });
 
   unitsWithStatsInOrder.push(...allUnits);
-};
+};*/
 
+/*
 const getGroupAttack = (): void => {
   let attackGroupSum = 0;
   let currentGroup: UnitWithStats[] = [];
@@ -80,24 +80,24 @@ const getGroupAttack = (): void => {
       attackGroupSum = 0;
     }
   });
-};
+};*/
 
-const attackEnemy = (): void => {
+const attackEnemy =  (): void => {
   const strongestUnit = enemyUnitsWithStats.reduce((prevUnit, currentUnit) => {
-    const parentElement = currentUnit.unitElement.parentElement;
-
-    if (parentElement && parentElement.classList.contains("dead")) {
+    if (currentUnit.unitElement.classList.contains("dead")) {
       return prevUnit;
     }
 
     return currentUnit.attackAvg > prevUnit.attackAvg ? currentUnit : prevUnit;
   });
+  console.log(strongestUnit);
+  strongestUnit.unitElement = enemyUnitWrapper.querySelector(`.${strongestUnit.unitName}`)?.parentElement as HTMLElement;
   strongestUnit.unitElement.click();
-  strongestUnit.unitElement = document.querySelector(`.${strongestUnit.unitName}`) as HTMLElement;
+  //await new Promise((resolve) => setTimeout(resolve, 1000));
 };
 
 getUnitsStats(enemyUnitsElements, enemyUnitsWithStats, false);
 getUnitsStats(ownUnitsElements, ownUnitsWithStats, true);
-getUnitsOrder();
-getGroupAttack();
+//getUnitsOrder();
+//getGroupAttack();
 attackEnemy();
